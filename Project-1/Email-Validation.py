@@ -16,4 +16,3 @@ if "@" and "." in email:
 else:
     print("Invalid Email")
     
-print("Valid Email")
