@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity AI - Voice Assistant</title>
+    <!-- Google Fonts: Outfit for titles, Inter for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Background decorative glowing blur elements -->
+        <div class="glow-bg glow-1"></div>
+        <div class="glow-bg glow-2"></div>
+
+        <!-- Sidebar / Settings Drawer -->
+        <aside class="sidebar glass">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-face-smile-wink logo-icon"></i>
+                    <span>Antigravity</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Gemini Key Section -->
+                <div class="settings-card glass-inner">
+                    <h3><i class="fa-solid fa-key icon"></i> Gemini API Key</h3>
+                    <p class="settings-desc">Provide your Gemini API key to enable open-ended conversation and intelligence.</p>
+                    <div class="input-wrapper">
+                        <input type="password" id="gemini-key" placeholder="AIzaSy..." autocomplete="off">
+                        <button id="toggle-key-visibility" title="Show/Hide Key">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <button class="btn btn-save" id="btn-save-key">Save Key</button>
+                </div>
+
+                <!-- Voice Selection -->
+                <div class="settings-card glass-inner">
+                    <h3><i class="fa-solid fa-volume-high icon"></i> TTS Voice</h3>
+                    <p class="settings-desc">Select the voice model used by the assistant.</p>
+                    <select id="voice-select">
+                        <option value="">Default System Voice</option>
+                    </select>
+                </div>
+
+                <!-- Shortcuts / Command Help -->
+                <div class="settings-card glass-inner help-panel">
+                    <h3><i class="fa-solid fa-wand-magic-sparkles icon"></i> Core Commands</h3>
+                    <ul class="help-list">
+                        <li><span class="cmd-tag">open notepad</span> - Opens Notepad</li>
+                        <li><span class="cmd-tag">open calculator</span> - Launches Calculator</li>
+                        <li><span class="cmd-tag">volume up / down</span> - Adjust system volume</li>
+                        <li><span class="cmd-tag">take screenshot</span> - Captures your screen</li>
+                        <li><span class="cmd-tag">system status</span> - Checks CPU/RAM/Battery</li>
+                        <li><span class="cmd-tag">search google for ...</span> - Performs web search</li>
+                        <li><span class="cmd-tag">wikipedia [topic]</span> - Summarizes Wikipedia articles</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <span class="pulse-dot active"></span>
+                    <span id="backend-status">Connected to Localhost</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-left">
+                    <h1 class="welcome-title">Jarvis Voice Assistant</h1>
+                    <p class="subtitle" id="time-display">Retrieving local time...</p>
+                </div>
+                <div class="header-right">
+                    <button class="icon-btn" id="btn-toggle-sidebar" title="Toggle Settings">
+                        <i class="fa-solid fa-sliders"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Center Visualizer Area -->
+            <section class="visualizer-section">
+                <div class="visualizer-container">
+                    <canvas id="visualizer-canvas"></canvas>
+                    <div class="orb-container">
+                        <div class="orb" id="assistant-orb">
+                            <div class="orb-core"></div>
+                            <div class="orb-glow"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-text-container">
+                    <span class="state-label" id="assistant-state">IDLE</span>
+                    <p class="speech-preview" id="speech-preview">Press the microphone or say "Hello" to start</p>
+                </div>
+            </section>
+
+            <!-- Chat Console & History (Scrollable) -->
+            <section class="console-section glass">
+                <div class="console-header">
+                    <span><i class="fa-solid fa-terminal console-icon"></i> Activity Console</span>
+                    <button class="clear-btn" id="btn-clear-console" title="Clear Console">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+                <div class="console-body" id="console-body">
+                    <!-- Logs will populate here -->
+                    <div class="log-message system">
+                        <div class="log-sender">System</div>
+                        <div class="log-text">Welcome, sir. Voice Assistant initialized. I am ready to accept commands.</div>
+                        <div class="log-time">Now</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Input Controls -->
+            <section class="input-section">
+                <div class="control-row">
+                    <!-- Text Command Input -->
+                    <div class="text-input-container glass">
+                        <input type="text" id="text-command" placeholder="Type a command or ask a question...">
+                        <button class="send-btn" id="btn-send-command">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                    <!-- Floating Action Microphone Button -->
+                    <button class="mic-btn" id="btn-mic" title="Activate Speech Recognition">
+                        <div class="mic-ripple"></div>
+                        <i class="fa-solid fa-microphone mic-icon"></i>
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Screenshot Modal Lightbox -->
+    <div id="screenshot-modal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="img-modal-target" alt="Screen Capture">
+        <div id="caption">Screenshot Preview</div>
+    </div>
+
+    <!-- Script assets -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
