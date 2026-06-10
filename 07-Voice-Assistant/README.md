@@ -1,4 +1,4 @@
-# 🎙️ Antigravity AI Voice Assistant
+# 🎙️  AI Voice Assistant
 
 An elegant, desktop-integrated Voice Assistant built with a **Flask backend** and a premium, glassmorphism **HTML/CSS/JS frontend**. It features real-time Windows OS integration, hardware stat monitoring, screen capture controls, and conversational intelligence powered by Google's Gemini API.
 
