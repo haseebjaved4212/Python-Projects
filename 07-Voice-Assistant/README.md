@@ -33,12 +33,12 @@ Here is an overview of the role each file plays in the application:
 
 ### File Breakdown
 
-* **[main.py](file:///c:/Users/DELL/OneDrive/Desktop/Python%20Projects/07-Voice-Assistant/main.py)**: The entry point. Spawns a background thread to wait for the Flask server to initialize, then launches your default web browser directly to the dashboard, ensuring a zero-configuration start.
-* **[app.py](file:///c:/Users/DELL/OneDrive/Desktop/Python%20Projects/07-Voice-Assistant/app.py)**: The Flask router. Directs user commands to local OS tasks. If a command cannot be executed locally, it routes the text to the Google Gemini API (if an API key is provided) to fetch an AI-generated chat response.
-* **[system_commands.py](file:///c:/Users/DELL/OneDrive/Desktop/Python%20Projects/07-Voice-Assistant/system_commands.py)**: Houses OS-specific integration routines. Simulates hardware media and volume keystrokes using standard Windows APIs (`ctypes`), runs shell commands to read hardware performance metrics (`wmic`), maps shortcuts to launch system programs, and captures images using `pyautogui`.
-* **[templates/index.html](file:///c:/Users/DELL/OneDrive/Desktop/Python%20Projects/07-Voice-Assistant/templates/index.html)**: The dashboard markup, referencing styling and script sheets. Integrates Google Fonts ("Outfit" and "Inter") and FontAwesome vectors.
-* **[static/style.css](file:///c:/Users/DELL/OneDrive/Desktop/Python%20Projects/07-Voice-Assistant/static/style.css)**: Tailors the space-black interface. Utilizes glassmorphism properties (blur overlays, borders, inner shadows) alongside pulsing animation triggers for states.
-* **[static/script.js](file:///c:/Users/DELL/OneDrive/Desktop/Python%20Projects/07-Voice-Assistant/static/script.js)**: Orchestrates the frontend. Runs the `webkitSpeechRecognition` loop to capture real-time user voice, schedules audio output utilizing the local browser's `speechSynthesis` engine, and updates the canvas visualizer waves.
+* **main.py**: The entry point. Spawns a background thread to wait for the Flask server to initialize, then launches your default web browser directly to the dashboard, ensuring a zero-configuration start.
+* **app.py**: The Flask router. Directs user commands to local OS tasks. If a command cannot be executed locally, it routes the text to the Google Gemini API (if an API key is provided) to fetch an AI-generated chat response.
+* **system_commands.py**: Houses OS-specific integration routines. Simulates hardware media and volume keystrokes using standard Windows APIs (`ctypes`), runs shell commands to read hardware performance metrics (`wmic`), maps shortcuts to launch system programs, and captures images using `pyautogui`.
+* **templates/index.html**: The dashboard markup, referencing styling and script sheets. Integrates Google Fonts ("Outfit" and "Inter") and FontAwesome vectors.
+* **static/style.css**: Tailors the space-black interface. Utilizes glassmorphism properties (blur overlays, borders, inner shadows) alongside pulsing animation triggers for states.
+* **static/script.js**: Orchestrates the frontend. Runs the `webkitSpeechRecognition` loop to capture real-time user voice, schedules audio output utilizing the local browser's `speechSynthesis` engine, and updates the canvas visualizer waves.
 
 ---
 
