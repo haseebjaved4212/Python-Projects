@@ -113,6 +113,14 @@ def open_app(app_name):
         "file explorer": "explorer.exe",
         "task manager": "taskmgr.exe",
         "taskmgr": "taskmgr.exe",
+        "word": "start winword",
+        "excel": "start excel",
+        "powerpoint": "start powerpnt",
+        "vscode": "code",
+        "vs code": "code",
+        "browser": "start msedge",
+        "edge": "start msedge",
+        "settings": "start ms-settings:"
     }
     
     app_name_lower = app_name.lower().strip()
@@ -120,7 +128,11 @@ def open_app(app_name):
     # Check if we have a direct mapping
     if app_name_lower in app_map:
         try:
-            subprocess.Popen(app_map[app_name_lower])
+            cmd_to_run = app_map[app_name_lower]
+            if cmd_to_run.startswith("start "):
+                os.system(cmd_to_run)
+            else:
+                subprocess.Popen(cmd_to_run)
             return f"Opening {app_name}."
         except Exception as e:
             return f"Failed to open {app_name}. Error: {str(e)}"
@@ -128,19 +140,30 @@ def open_app(app_name):
     # Fallback to standard web applications or system utilities
     if "chrome" in app_name_lower:
         try:
-            webbrowser.get('windows-default').open('https://www.google.com')
+            os.system("start chrome")
             return "Opening Google Chrome."
         except:
-            webbrowser.open('https://www.google.com')
-            return "Opening default browser."
+            webbrowser.get('windows-default').open('https://www.google.com')
+            return "Opening Google Chrome fallback."
             
     elif "youtube" in app_name_lower:
         webbrowser.open("https://www.youtube.com")
         return "Opening YouTube."
         
     elif "spotify" in app_name_lower:
-        webbrowser.open("https://open.spotify.com")
-        return "Opening Spotify."
+        try:
+            os.system("start spotify")
+            return "Opening Spotify."
+        except:
+            webbrowser.open("https://open.spotify.com")
+            return "Opening Spotify web."
+            
+    # Attempt to open via Windows "start" command as a fallback
+    try:
+        subprocess.Popen(f"start {app_name_lower}", shell=True)
+        return f"Attempting to open {app_name}."
+    except:
+        pass
         
     return f"Sorry, I don't know how to open '{app_name}' yet. You can add it to my configurations!"
 
@@ -232,20 +255,24 @@ def process_command(command, static_dir):
         return {"type": "error", "message": result["message"]}
 
     # 4. Open Apps
-    elif cmd.startswith("open "):
-        app_name = command[5:].strip()
-        msg = open_app(app_name)
-        return {"type": "action", "message": msg}
+    elif "open " in cmd:
+        match = re.search(r'open\s+(.+)', cmd)
+        if match:
+            app_name = match.group(1).strip()
+            msg = open_app(app_name)
+            return {"type": "action", "message": msg}
 
     # 5. Launch Websites directly
-    elif cmd.startswith("search google for ") or cmd.startswith("google "):
-        search_query = command.replace("search google for ", "").replace("google ", "").strip()
+    elif "google" in cmd and ("search" in cmd or cmd.startswith("google ")):
+        match = re.search(r'(?:search\s+(?:on\s+)?google\s+(?:for\s+)?|google\s+)(.+)', cmd)
+        search_query = match.group(1).strip() if match else cmd.replace("search on google", "").replace("search google", "").replace("google", "").strip()
         url = f"https://www.google.com/search?q={search_query.replace(' ', '+')}"
         webbrowser.open(url)
         return {"type": "action", "message": f"Searching Google for '{search_query}' in your browser."}
         
-    elif cmd.startswith("search youtube for ") or cmd.startswith("youtube "):
-        search_query = command.replace("search youtube for ", "").replace("youtube ", "").strip()
+    elif "youtube" in cmd and ("search" in cmd or cmd.startswith("youtube ")):
+        match = re.search(r'(?:search\s+(?:on\s+)?youtube\s+(?:for\s+)?|youtube\s+)(.+)', cmd)
+        search_query = match.group(1).strip() if match else cmd.replace("search on youtube", "").replace("search youtube", "").replace("youtube", "").strip()
         url = f"https://www.youtube.com/results?search_query={search_query.replace(' ', '+')}"
         webbrowser.open(url)
         return {"type": "action", "message": f"Searching YouTube for '{search_query}'."}
