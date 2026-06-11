@@ -39,7 +39,7 @@ def handle_command():
     # 2. If it's not a local command, route to Gemini if key is provided
     if gemini_key:
         try:
-            gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+            gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_key}"
             payload = {
                 "contents": [{
                     "parts": [{
