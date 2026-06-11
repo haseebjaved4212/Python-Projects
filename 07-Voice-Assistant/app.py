@@ -53,6 +53,9 @@ def handle_command():
                 }]
             }
             res = requests.post(gemini_url, json=payload, headers={"Content-Type": "application/json"}, timeout=10)
+            print(f"Gemini API response status code: {res.status_code}")
+            print(f"Gemini API response body: {res.text}")
+            
             if res.status_code == 200:
                 res_data = res.json()
                 # Extract response text
@@ -61,7 +64,7 @@ def handle_command():
             else:
                 return jsonify({
                     "type": "error", 
-                    "message": f"Gemini API returned status code {res.status_code}. Please verify your API key."
+                    "message": f"Gemini API returned status code {res.status_code}. Details: {res.text}"
                 })
         except Exception as e:
             return jsonify({
