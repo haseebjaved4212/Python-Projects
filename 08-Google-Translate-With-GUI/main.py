@@ -1,6 +1,5 @@
 import customtkinter as ctk
-import googletrans
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 import tkinter as tk
 from tkinter import messagebox
 
@@ -16,12 +15,11 @@ class TranslateApp(ctk.CTk):
         self.geometry("900x550")
         self.minsize(800, 500)
         
-        self.translator = Translator()
-        self.languages = googletrans.LANGUAGES
+        langs_dict = GoogleTranslator().get_supported_languages(as_dict=True)
         
         # Prepare language list (capitalized)
-        self.lang_list = [lang.capitalize() for lang in self.languages.values()]
-        self.lang_codes = {v.capitalize(): k for k, v in self.languages.items()}
+        self.lang_list = [lang.capitalize() for lang in langs_dict.keys()]
+        self.lang_codes = {lang.capitalize(): code for lang, code in langs_dict.items()}
         
         self.create_widgets()
         
@@ -99,12 +97,13 @@ class TranslateApp(ctk.CTk):
             self.translate_btn.configure(text="Translating...", state="disabled")
             self.update_idletasks()
             
-            result = self.translator.translate(text_to_translate, src=src_code, dest=dest_code)
+            # deep_translator uses 'auto' for source detection
+            translated_text = GoogleTranslator(source=src_code, target=dest_code).translate(text_to_translate)
             
             # Enable target textbox to insert text
             self.dest_textbox.configure(state="normal")
             self.dest_textbox.delete("1.0", "end")
-            self.dest_textbox.insert("1.0", result.text)
+            self.dest_textbox.insert("1.0", translated_text)
             self.dest_textbox.configure(state="disabled")
             
         except Exception as e:
